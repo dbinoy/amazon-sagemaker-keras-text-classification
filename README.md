@@ -27,7 +27,7 @@ For the IAM role, select ‘Create a new role’ and select the options shown be
 
 Click ‘Create role’ to create a new role and then hit ‘Create notebook instance’ to submit the request for a new notebook instance.
 
-2\. SageMaker Notebooks hava feature that allows you to optionally sync the content with a Github repository (`https://github.com/dbinoy/amazon-sagemaker-keras-text-classification.git`). Since you'll be using Notebook file and other files from this repository to build your custom container, add the URL of this repository to have this cloned onto your instance, upon creation.
+2\. SageMaker Notebooks have feature that allows you to optionally sync the content with a Github repository (`https://github.com/dbinoy/amazon-sagemaker-keras-text-classification.git`). Since you'll be using Notebook file and other files from this repository to build your custom container, add the URL of this repository to have this cloned onto your instance, upon creation.
 
 
 ![Amazon SageMaker Github Repo](/images/sm-keras-2.png)
@@ -35,7 +35,7 @@ Click ‘Create role’ to create a new role and then hit ‘Create notebook ins
 
 **Note:** It usually takes a few minutes for the notebook instance to become available. Once available, the status of the notebook instance will change from ‘Pending’ to ‘InService’. You can then follow the link to open the Jupyter console on this instance and move on to the next steps.
 
-2a\. Alternatively, you can create a Notebook lifecycle configuration, to add the code to clone the Github repository. This approach is partocularly useful, if you want to reuse a notebook that you might already hub.
+2a\. Alternatively, you can create a Notebook lifecycle configuration, to add the code to clone the Github repository. This approach is particularly useful, if you want to reuse a notebook that you might already have.
 
 Assuming your Notebook instance is in stopped state, add the following code into a new Lifecycle configuration, attach the configuration to your notebook, before starting the instance.
 ![SageMaker notebook configuration create](/images/sm-keras-2a.png)
