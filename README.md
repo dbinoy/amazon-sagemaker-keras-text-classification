@@ -44,7 +44,7 @@ Assuming your Notebook instance is in stopped state, add the following code into
 ```
 #!/bin/bash
 set -e
-cd SageMaker
+cd /home/ec2-user/SageMaker
 git clone https://github.com/dbinoy/amazon-sagemaker-keras-text-classification.git
 
 ```
