@@ -15,7 +15,7 @@ The model we will develop will classify news articles into the appropriate news 
 
 ### Part 1: Dataset Exploration
 
-Before we dive into the mechanics of our deep learning model, let’s explore the dataset and see what information we can use to predict the category. For this, we will use a notebook within Amazon SageMaker that we will can also utilize later on as our development machine.
+Before we dive into the mechanics of our deep learning model, let’s explore the dataset and see what information we can use to predict the category. For this, we will use a notebook within Amazon SageMaker that we can also utilize later on as our development machine.
 
 Follow these steps to launch a SageMaker Notebook Instance, download and explore the dataset:
 
@@ -34,6 +34,24 @@ Click ‘Create role’ to create a new role and then hit ‘Create notebook ins
 
 
 **Note:** It usually takes a few minutes for the notebook instance to become available. Once available, the status of the notebook instance will change from ‘Pending’ to ‘InService’. You can then follow the link to open the Jupyter console on this instance and move on to the next steps.
+
+2a\. Alternatively, you can create a Notebook lifecycle configuration, to add the code to clone the Github repository. This approach is partocularly useful, if you want to reuse a notebook that you might already hub.
+
+Assuming your Notebook instance is in stopped state, add the following code into a new Lifecycle configuration, attach the configuration to your notebook, before starting the instance.
+![SageMaker notebook configuration create](/images/sm-keras-2a.png)
+
+
+```
+#!/bin/bash
+set -e
+cd SageMaker
+git clone https://github.com/dbinoy/amazon-sagemaker-keras-text-classification.git
+
+```
+
+![SageMaker notebook configuration attach](/images/sm-keras-2b.png)
+
+With the config attached, when your Notebook instance starts, it will automatically clone this repository.
 
 
 3\.	Open the Jupyter Notebook file named `sagemaker_keras_text_classification.ipynb`. Make sure the kernel you are running is ‘conda_tensforflow_p27’.
