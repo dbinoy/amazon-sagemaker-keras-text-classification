@@ -34,53 +34,18 @@ Click ‘Create role’ to create a new role and then hit ‘Create notebook ins
 **Note:** It usually takes a few minutes for the notebook instance to become available. Once available, the status of the notebook instance will change from ‘Pending’ to ‘InService’. You can then follow the link to open the Jupyter console on this instance and move on to the next steps.
 
 
-3\.	From the Amazon SageMaker console, click ‘Open’ to navigate into the Jupyter notebook. Under ‘New’, select ‘Terminal’. This will open up a terminal session to your notebook instance.
+3\.	Open the Jupyter Notebook file named `sagemaker_keras_text_classification.ipynb`. Make sure the kernel you are running is ‘conda_tensforflow_p27’.
 
-![SageMaker Notebook Terminal](/images/sm-keras-0.png)
-
-4\. The companion code to this blogpost is on GitHub so let’s go ahead and clone that:
-
-```
-git clone https://github.com/aws-samples/amazon-sagemaker-keras-text-classification.git ./SageMaker/sagemaker-keras-text-classification
-```
-5\.	Switch into the ‘data’ directory
-
-```
-cd SageMaker/sagemaker-keras-text-classification/data
-```
-
-6\. Download and unzip the dataset
-
-```
-wget https://archive.ics.uci.edu/ml/machine-learning-databases/00359/NewsAggregatorDataset.zip && unzip NewsAggregatorDataset.zip
-```
-
-7\. Now lets also download and unzip the pre-trained glove embedding files (more on this in a bit):
-
-```
-wget http://nlp.stanford.edu/data/glove.6B.zip && unzip glove.6B.zip
-```
-
-8\. Remove the unnecessary files
-
-```
-rm 2pageSessions.csv glove.6B.200d.txt glove.6B.50d.txt glove.6B.300d.txt glove.6B.zip readme.txt NewsAggregatorDataset.zip && rm -rf __MACOSX/
-```
-
-At this point, you should only see two files: ‘glove.6B.100d.txt’ (word embeddings) and ‘newsCorpora.csv’ (dataset) in the this data directory.
-
-9\.	Close the terminal window and go back to the Jupyter notebook web UI. Click on the folder called ‘sagemaker_keras_text_classification’ and launch the notebook within it with the same name. Make sure the kernel you are running is ‘conda_tensforflow_p27’.
-
-![SageMaker notebook kernel](/images/sm-keras-5.png)
+![SageMaker notebook kernel](/images/sm-keras-3.png)
 
 If it’s not, you can switch it from ‘Kernel -> Change kernel’ menu:
 
-![SageMaker notebook change kernel](/images/sm-keras-6.png)
+![SageMaker notebook change kernel](/images/sm-keras-4.png)
 
 
-10\.	Once you individually run the cells within this notebook (shift+enter) through ‘Step 1: Data Exploration’, you should see some sample data (Note: do not run all cells within the notebook – the example is designed to be followed one cell at a time):
+4\.	Start following the steps on the Jupyter notebook by individually running cells within (shift+enter) through ‘Part 1: Data Exploration’, you should see some sample data (Note: do not run all cells within the notebook – the example is designed to be followed one cell at a time):
 
-![SageMaker notebook data exploration](/images/sm-keras-7.png)
+![SageMaker notebook data exploration](/images/sm-keras-5.png)
 
 Here we first import the necessary libraries and tools such as TensorFlow, pandas and numpy. An open-source high performance data analysis library, pandas is an essential tool used in almost every Python-based data science experiment. NumPy is another Python library that provides data structures to hold multi-dimensional array data and provides many utility functions to transform that data. TensorFlow is a widely used deep learning framework that also includes the higher-level deep learning Python library called Keras. We will be using Keras to build and iterate our text classification model.
 
@@ -183,7 +148,7 @@ cd ../container/local_test
 
 With an 80/20 split between the training and validation and a simple Feed Forward Neural Network, we get around 85% validation accuracy after two epochs – not a bad start!
 
-![local training results](/images/sm-keras-8.png)
+![local training results](/images/sm-keras-6.png)
 
 We now have a saved model called ‘news_breaker.h5’ and the ‘tokenizer.pickle’ file within ‘sagemaker-keras-text-classification/container/local_test /test_dir/model’ – the local directory that we mapped to the ‘/opt/ml’ directory within the container.
 
