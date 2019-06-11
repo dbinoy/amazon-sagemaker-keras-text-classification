@@ -46,7 +46,7 @@ Assuming your Notebook instance is in stopped state, add the following code into
 set -e
 cd /home/ec2-user/SageMaker
 git clone https://github.com/dbinoy/amazon-sagemaker-keras-text-classification.git
-
+sudo chown ec2-user:ec2-user -R amazon-sagemaker-keras-text-classification/
 ```
 
 ![SageMaker notebook configuration attach](/images/sm-keras-2b.png)
