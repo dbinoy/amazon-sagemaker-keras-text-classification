@@ -28,6 +28,8 @@ For the IAM role, select ‘Create a new role’ and select the options shown be
 Click ‘Create role’ to create a new role and then hit ‘Create notebook instance’ to submit the request for a new notebook instance.
 
 2\. SageMaker Notebooks hava feature that allows you to optionally sync the content with a Github repository. Since you'll be using Notebook file and other files from this repository to build your custom container, add the URL of this repository to have this cloned onto your instance, upon creation.
+`https://github.com/dbinoy/amazon-sagemaker-keras-text-classification.git`
+
 ![Amazon SageMaker Github Repo](/images/sm-keras-2.png)
 
 
