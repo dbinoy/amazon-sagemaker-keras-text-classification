@@ -59,118 +59,36 @@ Since we are going to be using a custom built container for this workshop, we wi
 
 We will first create a `base` TensorFlow container and then add our custom code to create a `final` container. We will use this `final` container for local testing. Once satisfied with local testing, we will push it up to Amazon Container Registery (ECR) where it can pulled from by Amazon SageMaker for training and deployment.
 
-1\. Let's start by creating the base TensorFlow container. Go to the notebook instance terminal window, switch to the home directory and clone the `sagemaker-tensorflow-container` repo:
-
-```
-cd ~
-```
-
-```
-git clone https://github.com/aws/sagemaker-tensorflow-container.git
-```
-
-2\. We will be using TensorFlow 1.8.0 so lets switch to the appropriate directory
-
-```
-cd sagemaker-tensorflow-container/docker/1.8.0/base
-```
-
-3\. If you list the directory contents here, you will notice that there are two Dockerfiles - one made for CPU based nodes and another for GPU based. Since, we will be using CPU machines, lets build the CPU docker image
-
-```
-docker build -t tensorflow-base:1.8.0-cpu-py2 -f Dockerfile.cpu .
-```
-
-Building the docker images should not take more than 5-7 minutes. Once finished, you can list the images by running `docker images`. You should see the new base image named `tensorflow-base:1.8.0-cpu-py2`.
-
-4\. Next we create our `final` images by including our code onto the `base` container. In the terminal window, switch to the container directory
-
-```
-cd ~/SageMaker/sagemaker-keras-text-classification/container/
-```
-
-5\. Create a new Dockerfile using `vim Dockerfile`, hit `i` to insert and then paste the content below
-
-```
-# Build an image that can do training and inference in SageMaker
-
-FROM tensorflow-base:1.8.0-cpu-py2
-
-ENV PATH="/opt/program:${PATH}"
-
-# Set up the program in the image
-COPY sagemaker_keras_text_classification /opt/program
-WORKDIR /opt/program
-```
-Hit Escape and then `:wq` to save and exit vim.
-
-We start from the `base` image, add the code directory to our path, copy the code into that directory and finally set the WORKDIR to the same path so any subsequent RUN/ENTRYPOINT commands run by Amazon SageMaker will use this directory.
-
-6\. Build the `final` image
-
-```
-docker build -t sagemaker-keras-text-class:latest .
-```
 
 ### Part 3: Local Testing of Training & Inference Code
 
 Once we are finished developing the training portion (in ‘container/train’), we can start testing locally so we can debug our code quickly. Local test scripts are found in the ‘container/local_test’ subfolder. Here we can run ‘local_train.sh’ which will, in turn, run a Docker container within which our training code will execute.
 
-#### Testing Training Code
-
-1\.	The local testing framework expects the training data to be in the ‘/container/local_test/test_dir/input/data/training’ folder so let’s copy over the contents of our ‘data’ folder there.
-
-In the notebook instance terminal window, switch over to the ‘sagemaker-keras-text-classification/data’ directory
-
-```
-cd ~/SageMaker/sagemaker-keras-text-classification/data
-```
-
- and then run:
-
-```
-cp -a . ../container/local_test/test_dir/input/data/training/
-```
-
-2\. Switch into the ‘local_test’ directory
-
-```
-cd ../container/local_test
-```
-
-3\. Run the following command to run the training locally.
-
-```
-./train_local.sh sagemaker-keras-text-class:latest
-```
-
-*Note:* it might take anywhere from 2-3 minutes to complete for the local training to complete.
-
 With an 80/20 split between the training and validation and a simple Feed Forward Neural Network, we get around 85% validation accuracy after two epochs – not a bad start!
 
 ![local training results](/images/sm-keras-6.png)
 
-We now have a saved model called ‘news_breaker.h5’ and the ‘tokenizer.pickle’ file within ‘sagemaker-keras-text-classification/container/local_test /test_dir/model’ – the local directory that we mapped to the ‘/opt/ml’ directory within the container.
-
 #### Testing Inference Code
 
-It is also advisable to locally test and debug the interference Flask app so we don’t waste time debugging it when we deploy it to Amazon SageMaker.
+In order to not waste time debugging after deploying it is also advisable to locally test and debug the interference Flask app before deploying it as SageMaker Endpoint.
 
-4\.	Start local testing by running ‘serve_local.sh’ in the ‘local_test’ directory (we should be in it already after completing previous step):
-
+Run the following by opening a new terminal
 ```
+cd ~/SageMaker/amazon-sagemaker-keras-text-classification/container/local_test/
 ./serve_local.sh sagemaker-keras-text-class:latest
 ```
 
 This is a simple script that uses the ‘Docker run’ command to start the container and the Flask app that we defined previously in the `serve` file.
 
-5\. Now **open another terminal**, move to the `local_test` directory and run ‘predict.sh’. This script issues a request to the flask app using the test news headline in `input.json`:
+
+Use following commands, either from a terminal, or from within your Jupyter Notebook (using Jupyter Magic Command). This script issues a request to the flask app using the test news headline in `input.json`:
 
 ```
-cd SageMaker/sagemaker-keras-text-classification/container/local_test && ./predict.sh input.json application/json
+cd ~/SageMaker/amazon-sagemaker-keras-text-classification/container/local_test/
+./predict.sh input.json application/json
 ```
 
-Great! Our model inference implementation responds and is correctly able to categorize this headline as a Health & Medicine story.
+At this point your local model should correctly be able to categorize test headlines (mostly).
 
 ### Part 4: Training & Deployment on Amazon SageMaker
 
