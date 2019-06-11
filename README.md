@@ -13,13 +13,13 @@ In this workshop, you will work on this advanced use-case of building, training 
 
 The model we will develop will classify news articles into the appropriate news category. To train our model, we will be using the [UCI News Dataset](https://archive.ics.uci.edu/ml/datasets/News+Aggregator) which contains a list of about 420K articles and their appropriate categories (labels). There are four categories: Business (b), Science & Technology (t), Entertainment (e) and Health & Medicine (m).
 
-### LAB1: Dataset Exploration
+### Part 1: Dataset Exploration
 
 Before we dive into the mechanics of our deep learning model, let’s explore the dataset and see what information we can use to predict the category. For this, we will use a notebook within Amazon SageMaker that we will can also utilize later on as our development machine.
 
-Follow these steps to launch a notebook, download and explore the dataset:
+Follow these steps to launch a SageMaker Notebook Instance, download and explore the dataset:
 
-1\.	Open the Amazon SageMaker Console, click on ‘Create notebook instance’ and give the notebook a name. For the instance type, I’m going to pick ‘ml.t2.medium’ since our example dataset is small and I don’t intend on using the GPUs for training/inference.
+1\.	Open Amazon SageMaker Console, navigae to ‘Notebook instances‘ under ‘Noteboo‘ menu and click on ‘Create notebook instance’. Choose a name for your Notebook instance. For the instance type, leave the default ‘ml.t2.medium’ since our example dataset is small and you won’t use GPUs for running training/inference locally.
 
 For the IAM role, select ‘Create a new role’ and select the options shown below for the role configuration.
 
@@ -27,23 +27,12 @@ For the IAM role, select ‘Create a new role’ and select the options shown be
 
 Click ‘Create role’ to create a new role and then hit ‘Create notebook instance’ to submit the request for a new notebook instance.
 
-**Note:** It usually takes a few minutes for the notebook instance to become available. Once available, the status of the notebook instance will change from ‘Pending’ to ‘InService’. You can move on to the next step while notebook instance is still in 'Pending' state.
+2\. SageMaker Notebooks hava feature that allows you to optionally sync the content with a Github repository. Since you'll be using Notebook file and other files from this repository to build your custom container, add the URL of this repository to have this cloned onto your instance, upon creation.
+![Amazon SageMaker Github Repo](/images/sm-keras-2.png)
 
-2\. While the notebook instance comes up, let’s go ahead and add a managed IAM policy to give the notebook instance and Amazon SageMaker access to read and write images to the Elastic Container Repository (ECR) service so that we can push the Docker images from our notebook instance and Amazon SageMaker can retrieve them for training and inference.
 
-From the Amazon SageMaker console, click on the name of the notebook instance you just created:
+**Note:** It usually takes a few minutes for the notebook instance to become available. Once available, the status of the notebook instance will change from ‘Pending’ to ‘InService’. You can then follow the link to open the Jupyter console on this instance and move on to the next steps.
 
-![SageMaker console instance list](/images/sm-keras-2.png)
-
-From the notebook instance details page, click on the new role that you just created.
-
-![SageMaker console instance details](/images/sm-keras-3.png)
-
-This will open up a new tab showing the IAM role details. Here click on ‘Attach policies’ and then search for ‘AmazonEC2ContainerRegistryFullAccess’ policy, select it and then click on ‘Attach policy’.
-
-![SageMaker IAM Role Policy](/images/sm-keras-4.png)
-
-*Please make sure to check the checkbox next to the policy before hitting `Attach policy`*
 
 3\.	From the Amazon SageMaker console, click ‘Open’ to navigate into the Jupyter notebook. Under ‘New’, select ‘Terminal’. This will open up a terminal session to your notebook instance.
 
@@ -99,7 +88,7 @@ Next we define the list of columns contained in this dataset (the format is usua
 
 **Remember, our goal is to accurately predict the category of any news article. So, ‘Category’ is our label or target column. For this example, we will only use the information contained in the ‘Title’ to predict the category.**
 
-### LAB 2: Building the SageMaker TensorFlow Container
+### Part 2: Building the SageMaker TensorFlow Container
 
 Since we are going to be using a custom built container for this workshop, we will need to create it. The Amazon SageMaker notebook instance already comes loaded with Docker. The SageMaker team has also created the [`sagemaker-tensorflow-container`](https://github.com/aws/sagemaker-tensorflow-container) project that makes it super easy for us to build custom TensorFlow containers that are optimized to run on Amazon SageMaker. Similar containers are also available for other widely used ML/DL frameworks as well.
 
@@ -158,7 +147,7 @@ We start from the `base` image, add the code directory to our path, copy the cod
 docker build -t sagemaker-keras-text-class:latest .
 ```
 
-### LAB 3: Local Testing of Training & Inference Code
+### Part 3: Local Testing of Training & Inference Code
 
 Once we are finished developing the training portion (in ‘container/train’), we can start testing locally so we can debug our code quickly. Local test scripts are found in the ‘container/local_test’ subfolder. Here we can run ‘local_train.sh’ which will, in turn, run a Docker container within which our training code will execute.
 
@@ -218,7 +207,7 @@ cd SageMaker/sagemaker-keras-text-classification/container/local_test && ./predi
 
 Great! Our model inference implementation responds and is correctly able to categorize this headline as a Health & Medicine story.
 
-### Lab 4: Training & Deployment on Amazon SageMaker
+### Part 4: Training & Deployment on Amazon SageMaker
 
 Now that we are done testing locally, we are ready to package up our code and submit to Amazon SageMaker for training or deployment (hosting) or both.
 
@@ -238,7 +227,7 @@ history = model.fit(x_train, y_train,
 
 2\. Open the ‘sagemaker_keras_text_classification.ipynb’ notebook and follow the steps listed in **Lab 4** to upload the data to S3, submit the training job and, finally, deploy the model for inference. The notebook contains explanations for each step and also shows how to test your inference endpoint.
 
-### Lab 5: Distributed Training in Script Mode with Horovod Distributed Training Framework.
+### Part 5: Distributed Training in Script Mode with Horovod Distributed Training Framework.
 This lab will demonstrate both SageMaker Horovod framework as well as SageMaker's Script mode.
 
 #### A. SageMaker's Horovod Distribugted Training Framework
